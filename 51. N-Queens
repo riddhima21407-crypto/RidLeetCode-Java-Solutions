@@ -1,0 +1,66 @@
+class Solution {
+    List<List<String>> output = new ArrayList<>();
+
+    public List<List<String>> solveNQueens(int n) {
+        char[][] board = new char[n][n];
+
+        for (int i = 0; i < n; i++) {
+            Arrays.fill(board[i], '.');
+        }
+
+        int[] leftRow = new int[n];
+        int[] upperDiagonal = new int[2 * n - 1];
+        int[] lowerDiagonal = new int[2 * n - 1];
+
+        solve(0, board, leftRow, upperDiagonal, lowerDiagonal, n);
+
+        return output;
+    }
+
+    private void solve(
+            int col,
+            char[][] board,
+            int[] leftRow,
+            int[] upperDiagonal,
+            int[] lowerDiagonal,
+            int n) {
+
+        if (col == n) {
+            List<String> arrangement = new ArrayList<>();
+
+            for (int i = 0; i < n; i++) {
+                arrangement.add(new String(board[i]));
+            }
+
+            output.add(arrangement);
+            return;
+        }
+
+        for (int row = 0; row < n; row++) {
+
+            int upperIndex = row + col;
+            int lowerIndex = n - 1 + col - row;
+
+            if (leftRow[row] == 0
+                    && upperDiagonal[upperIndex] == 0
+                    && lowerDiagonal[lowerIndex] == 0) {
+
+                // Place queen
+                board[row][col] = 'Q';
+                leftRow[row] = 1;
+                upperDiagonal[upperIndex] = 1;
+                lowerDiagonal[lowerIndex] = 1;
+
+                // Move to the next column
+                solve(col + 1, board, leftRow,
+                        upperDiagonal, lowerDiagonal, n);
+
+                // Backtrack
+                board[row][col] = '.';
+                leftRow[row] = 0;
+                upperDiagonal[upperIndex] = 0;
+                lowerDiagonal[lowerIndex] = 0;
+            }
+        }
+    }
+}
